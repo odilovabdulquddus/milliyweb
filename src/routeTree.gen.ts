@@ -16,6 +16,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedMyOrdersRouteImport } from './routes/_authenticated/my-orders'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const OrderRoute = OrderRouteImport.update({
   id: '/order',
@@ -51,12 +52,18 @@ const AuthenticatedMyOrdersRoute = AuthenticatedMyOrdersRouteImport.update({
   path: '/my-orders',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/order': typeof OrderRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/my-orders': typeof AuthenticatedMyOrdersRoute
   '/profile': typeof AuthenticatedProfileRoute
 }
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/order': typeof OrderRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/my-orders': typeof AuthenticatedMyOrdersRoute
   '/profile': typeof AuthenticatedProfileRoute
 }
@@ -75,14 +83,22 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/order': typeof OrderRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/my-orders': typeof AuthenticatedMyOrdersRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/cart' | '/order' | '/my-orders' | '/profile'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/cart'
+    | '/order'
+    | '/admin'
+    | '/my-orders'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cart' | '/order' | '/my-orders' | '/profile'
+  to: '/' | '/auth' | '/cart' | '/order' | '/admin' | '/my-orders' | '/profile'
   id:
     | '__root__'
     | '/'
@@ -90,6 +106,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/order'
+    | '/_authenticated/admin'
     | '/_authenticated/my-orders'
     | '/_authenticated/profile'
   fileRoutesById: FileRoutesById
@@ -153,15 +170,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMyOrdersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedMyOrdersRoute: typeof AuthenticatedMyOrdersRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedMyOrdersRoute: AuthenticatedMyOrdersRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
 }
