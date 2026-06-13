@@ -14,16 +14,275 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      about_content: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          value: string | null
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          value?: string | null
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string | null
+        }
+        Relationships: []
+      }
+      admin_helpers: {
+        Row: {
+          can_see_admin_panel: boolean
+          can_see_notifications: boolean
+          created_at: string
+          display_name: string | null
+          email: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          can_see_admin_panel?: boolean
+          can_see_notifications?: boolean
+          created_at?: string
+          display_name?: string | null
+          email: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          can_see_admin_panel?: boolean
+          can_see_notifications?: boolean
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          order_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          order_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          order_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          admin_notes: string | null
+          admin_prompt: string | null
+          ai_preview_html: string | null
+          ai_prompt: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          deadline_date: string | null
+          deadline_days: number | null
+          domain_ext: string | null
+          domain_name: string | null
+          extras: Json
+          id: string
+          image_url: string | null
+          last_reminder_at: string | null
+          logo_url: string | null
+          price_max: number | null
+          price_min: number | null
+          site_name: string
+          status: string
+          tariff: string | null
+          tariff_extra: number
+          total_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          admin_prompt?: string | null
+          ai_preview_html?: string | null
+          ai_prompt?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          deadline_date?: string | null
+          deadline_days?: number | null
+          domain_ext?: string | null
+          domain_name?: string | null
+          extras?: Json
+          id?: string
+          image_url?: string | null
+          last_reminder_at?: string | null
+          logo_url?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          site_name: string
+          status?: string
+          tariff?: string | null
+          tariff_extra?: number
+          total_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          admin_prompt?: string | null
+          ai_preview_html?: string | null
+          ai_prompt?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          deadline_date?: string | null
+          deadline_days?: number | null
+          domain_ext?: string | null
+          domain_name?: string | null
+          extras?: Json
+          id?: string
+          image_url?: string | null
+          last_reminder_at?: string | null
+          logo_url?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          site_name?: string
+          status?: string
+          tariff?: string | null
+          tariff_extra?: number
+          total_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      our_sites: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          sort_order: number
+          title: string | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_email: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: never; Returns: boolean }
+      is_staff: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "helper"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +409,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "helper"],
+    },
   },
 } as const
