@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Lock, Trash2, Plus, Save, Pencil } from "lucide-react";
+import { Lock, Trash2, Plus, Save, Pencil, Copy, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +21,7 @@ import {
   adminListUsers,
   adminUpdateUser,
   adminDeleteUser,
+  adminSetRole,
   adminListOrders,
   adminUpdateOrder,
   adminDeleteOrder,
@@ -86,12 +87,14 @@ function AdminPage() {
           <TabsTrigger value="about">Biz haqimizda</TabsTrigger>
           <TabsTrigger value="users">Foydalanuvchilar</TabsTrigger>
           <TabsTrigger value="helpers">Yordamchilar</TabsTrigger>
+          <TabsTrigger value="code">Kodi</TabsTrigger>
         </TabsList>
         <TabsContent value="orders" className="mt-6"><OrdersTab /></TabsContent>
         <TabsContent value="sites" className="mt-6"><SitesTab /></TabsContent>
         <TabsContent value="about" className="mt-6"><AboutTab /></TabsContent>
         <TabsContent value="users" className="mt-6"><UsersTab /></TabsContent>
         <TabsContent value="helpers" className="mt-6"><HelpersTab /></TabsContent>
+        <TabsContent value="code" className="mt-6"><CodeTab /></TabsContent>
       </Tabs>
     </div>
   );
@@ -171,6 +174,70 @@ function OrdersTab() {
           </div>
         </Box>
       ))}
+    </div>
+  );
+}
+
+/* ---------------- Code (Kodi) ---------------- */
+// Bundled at build time: the full source of this site as raw text.
+const rawSource = import.meta.glob("/src/**/*.{ts,tsx,css}", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+const rawRoot = import.meta.glob("/*.{ts,json,html,md}", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+function CodeTab() {
+  const files = { ...rawRoot, ...rawSource };
+  const paths = Object.keys(files).sort();
+  const [active, setActive] = useState(paths[0] ?? "");
+  const [search, setSearch] = useState("");
+
+  const shown = paths.filter((p) => p.toLowerCase().includes(search.toLowerCase()));
+  const code = files[active] ?? "";
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      toast.success("Kod nusxalandi");
+    } catch {
+      toast.error("Nusxalab bo'lmadi");
+    }
+  };
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
+      <Box>
+        <Input placeholder="Fayl qidirish..." value={search} onChange={(e) => setSearch(e.target.value)} className="mb-3" />
+        <div className="max-h-[60vh] space-y-1 overflow-y-auto">
+          {shown.map((p) => (
+            <button
+              key={p}
+              onClick={() => setActive(p)}
+              className={`flex w-full items-center gap-2 truncate rounded-md px-2 py-1.5 text-left text-xs transition-colors ${
+                active === p ? "bg-primary/15 text-primary" : "hover:bg-muted"
+              }`}
+            >
+              <FileCode className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">{p.replace(/^\//, "")}</span>
+            </button>
+          ))}
+          {shown.length === 0 && <p className="text-xs text-muted-foreground">Fayl topilmadi.</p>}
+        </div>
+      </Box>
+      <Box>
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <p className="truncate font-mono text-sm font-medium">{active.replace(/^\//, "")}</p>
+          <Button size="sm" variant="outline" onClick={copy}><Copy className="mr-1 h-4 w-4" /> Nusxalash</Button>
+        </div>
+        <pre className="max-h-[60vh] overflow-auto rounded-lg bg-muted p-4 text-xs leading-relaxed">
+          <code>{code}</code>
+        </pre>
+      </Box>
     </div>
   );
 }
@@ -275,6 +342,11 @@ function UsersTab() {
     await adminUpdateUser({ data: { userId, fullName, phone } });
     toast.success("Saqlandi");
   };
+  const toggleAdmin = async (userId: string, grant: boolean) => {
+    await adminSetRole({ data: { userId, role: "admin", grant } });
+    refresh();
+    toast.success(grant ? "Admin huquqi berildi" : "Admin huquqi olib tashlandi");
+  };
   const del = async (userId: string) => {
     if (!confirm("Foydalanuvchini o'chirishni tasdiqlaysizmi?")) return;
     await adminDeleteUser({ data: { userId } });
@@ -294,6 +366,10 @@ function UsersTab() {
           <p className="mt-1 text-xs text-muted-foreground">
             {u.email} {u.roles.length > 0 && `· ${u.roles.join(", ")}`}
           </p>
+          <div className="mt-2 flex items-center justify-between rounded-lg bg-muted px-3 py-2">
+            <Label className="text-sm">Admin panel huquqi</Label>
+            <Switch checked={u.roles.includes("admin")} onCheckedChange={(v) => toggleAdmin(u.user_id, v)} />
+          </div>
           <div className="mt-2 flex gap-2">
             <Button
               size="sm"

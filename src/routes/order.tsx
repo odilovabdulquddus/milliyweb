@@ -6,6 +6,7 @@ import { Loader2, Sparkles, RefreshCw, Upload, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { PhoneInput } from "@/components/PhoneInput";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -258,7 +259,7 @@ function OrderPage() {
             <Input value={form.contactName} onChange={(e) => update({ contactName: e.target.value })} />
           </Field>
           <Field label="Telefon raqam">
-            <Input value={form.contactPhone} onChange={(e) => update({ contactPhone: e.target.value })} placeholder="+998 ..." />
+            <PhoneInput value={form.contactPhone} onValueChange={(v) => update({ contactPhone: v })} />
           </Field>
           <Field label="Qaysi muddatgacha kerak">
             <Select value={String(form.deadlineDays)} onValueChange={(v) => update({ deadlineDays: Number(v) })}>

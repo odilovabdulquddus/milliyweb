@@ -53,6 +53,25 @@ export const adminDeleteUser = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// Grant or revoke the admin role for a specific account (managed by an admin).
+export const adminSetRole = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ userId: z.string().uuid(), role: z.enum(["admin", "helper"]), grant: z.boolean() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (data.grant) {
+      await supabaseAdmin
+        .from("user_roles")
+        .upsert({ user_id: data.userId, role: data.role }, { onConflict: "user_id,role" });
+    } else {
+      await supabaseAdmin.from("user_roles").delete().eq("user_id", data.userId).eq("role", data.role);
+    }
+    return { ok: true };
+  });
+
 // ---------- Orders ----------
 export const adminListOrders = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
