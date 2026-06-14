@@ -87,12 +87,14 @@ function AdminPage() {
           <TabsTrigger value="about">Biz haqimizda</TabsTrigger>
           <TabsTrigger value="users">Foydalanuvchilar</TabsTrigger>
           <TabsTrigger value="helpers">Yordamchilar</TabsTrigger>
+          <TabsTrigger value="code">Kodi</TabsTrigger>
         </TabsList>
         <TabsContent value="orders" className="mt-6"><OrdersTab /></TabsContent>
         <TabsContent value="sites" className="mt-6"><SitesTab /></TabsContent>
         <TabsContent value="about" className="mt-6"><AboutTab /></TabsContent>
         <TabsContent value="users" className="mt-6"><UsersTab /></TabsContent>
         <TabsContent value="helpers" className="mt-6"><HelpersTab /></TabsContent>
+        <TabsContent value="code" className="mt-6"><CodeTab /></TabsContent>
       </Tabs>
     </div>
   );
