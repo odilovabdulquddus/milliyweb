@@ -27,7 +27,9 @@ export const TARIFFS: TariffOption[] = [
 ];
 
 export function formatSom(n: number): string {
-  return new Intl.NumberFormat("uz-UZ").format(Math.round(n)) + " so'm";
+  // Deterministic formatting (same on server and client) to avoid hydration mismatches.
+  const digits = String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return digits + " so'm";
 }
 
 export function getDeadlineOption(days: number): DeadlineOption {
