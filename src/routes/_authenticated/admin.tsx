@@ -278,6 +278,11 @@ function UsersTab() {
     await adminUpdateUser({ data: { userId, fullName, phone } });
     toast.success("Saqlandi");
   };
+  const toggleAdmin = async (userId: string, grant: boolean) => {
+    await adminSetRole({ data: { userId, role: "admin", grant } });
+    refresh();
+    toast.success(grant ? "Admin huquqi berildi" : "Admin huquqi olib tashlandi");
+  };
   const del = async (userId: string) => {
     if (!confirm("Foydalanuvchini o'chirishni tasdiqlaysizmi?")) return;
     await adminDeleteUser({ data: { userId } });
@@ -297,6 +302,10 @@ function UsersTab() {
           <p className="mt-1 text-xs text-muted-foreground">
             {u.email} {u.roles.length > 0 && `· ${u.roles.join(", ")}`}
           </p>
+          <div className="mt-2 flex items-center justify-between rounded-lg bg-muted px-3 py-2">
+            <Label className="text-sm">Admin panel huquqi</Label>
+            <Switch checked={u.roles.includes("admin")} onCheckedChange={(v) => toggleAdmin(u.user_id, v)} />
+          </div>
           <div className="mt-2 flex gap-2">
             <Button
               size="sm"
