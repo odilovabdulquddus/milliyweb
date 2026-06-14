@@ -2,16 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const ADMIN_EMAIL = "gvvov65@gmail.com";
-
 export const ensureProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z.object({ fullName: z.string().trim().max(120).optional(), phone: z.string().trim().max(40).optional() }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    const { userId, claims } = context;
-    const email = (claims.email as string | undefined) ?? "";
+    const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     await supabaseAdmin
@@ -26,7 +23,9 @@ export const ensureProfile = createServerFn({ method: "POST" })
       .select("id", { count: "exact", head: true })
       .eq("role", "admin");
 
-    if (email === ADMIN_EMAIL || (count ?? 0) === 0) {
+    // Bootstrap: only the very first registered account becomes admin.
+    // Subsequent admin grants must be made by an existing admin.
+    if ((count ?? 0) === 0) {
       await supabaseAdmin.from("user_roles").upsert({ user_id: userId, role: "admin" }, { onConflict: "user_id,role" });
     }
     return { ok: true };
