@@ -22,8 +22,8 @@ interface AuthContextValue {
   isAdmin: boolean;
   profile: ProfileData["profile"];
   refreshProfile: () => Promise<void>;
-  signUp: (fullName: string, phone: string, password: string) => Promise<void>;
-  signIn: (phone: string, password: string) => Promise<void>;
+  signUp: (fullName: string, phone: string, password: string, email?: string) => Promise<void>;
+  signIn: (identifier: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -64,8 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refreshProfile]);
 
   const signUp = useCallback(
-    async (fullName: string, phone: string, password: string) => {
-      const email = phoneToEmail(phone);
+    async (fullName: string, phone: string, password: string, emailInput?: string) => {
+      const email = emailInput && emailInput.includes("@") ? emailInput.trim().toLowerCase() : phoneToEmail(phone);
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -79,8 +79,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signIn = useCallback(
-    async (phone: string, password: string) => {
-      const email = phoneToEmail(phone);
+    async (identifier: string, password: string) => {
+      const email = phoneToEmail(identifier);
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         if (error.message.toLowerCase().includes("invalid")) {
