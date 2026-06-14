@@ -258,7 +258,7 @@ function OrderPage() {
             <Input value={form.contactName} onChange={(e) => update({ contactName: e.target.value })} />
           </Field>
           <Field label="Telefon raqam">
-            <Input value={form.contactPhone} onChange={(e) => update({ contactPhone: e.target.value })} placeholder="+998 ..." />
+            <PhoneInput value={form.contactPhone} onValueChange={(v) => update({ contactPhone: v })} />
           </Field>
           <Field label="Qaysi muddatgacha kerak">
             <Select value={String(form.deadlineDays)} onValueChange={(v) => update({ deadlineDays: Number(v) })}>
