@@ -21,6 +21,7 @@ import {
   adminListUsers,
   adminUpdateUser,
   adminDeleteUser,
+  adminSetRole,
   adminListOrders,
   adminUpdateOrder,
   adminDeleteOrder,
