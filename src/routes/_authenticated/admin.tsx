@@ -180,7 +180,7 @@ function OrdersTab() {
 
 /* ---------------- Code (Kodi) ---------------- */
 // Bundled at build time: the full source of this site as raw text.
-const rawSource = import.meta.glob("/src/**/*.{ts,tsx,css}", {
+const rawSource = import.meta.glob(["/src/**/*.{ts,tsx,css}", "!/src/routeTree.gen.ts"], {
   query: "?raw",
   import: "default",
   eager: true,
