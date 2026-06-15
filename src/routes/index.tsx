@@ -62,8 +62,8 @@ function Index() {
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center md:py-32">
-          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5 text-accent" /> AI yordamida saytingizni yaratamiz
+          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-xs text-muted-foreground whitespace-pre-line">
+            <Sparkles className="h-3.5 w-3.5 text-accent" /> SAYTNI MATN BOYICHA MUAMMOTOGIRLASH TEKIN{"\n"}
           </span>
           <h1 className="text-4xl font-extrabold leading-tight md:text-6xl">
             Orzuingizdagi saytni <span className="text-gradient">buyurtma qiling</span>
